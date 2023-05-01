@@ -1,19 +1,18 @@
 package com.stock.inventario.products.interfaces;
 
-import com.stock.inventario.products.models.Product;
-import org.springframework.stereotype.Service;
-
+import com.stock.inventario.products.dto.BasicProductDTO;
+import com.stock.inventario.products.dto.ProductCreationDTO;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
-    public List<Product> getProducts();
+    public List<BasicProductDTO> getProducts();
 
-    public Optional<Product> getProductById(String id);
+    public BasicProductDTO getProductById(String id);
 
-    public Product createProduct(Product product);
+    public BasicProductDTO createProduct(ProductCreationDTO product);
 
-    public Product updateProduct(Product product, String id) throws Exception;
+    public BasicProductDTO updateProduct(ProductCreationDTO product, String id) throws ChangeSetPersister.NotFoundException;
 
-    public void deleteProduct(String id);
+    public void deleteProduct(String id) throws ChangeSetPersister.NotFoundException;
 }

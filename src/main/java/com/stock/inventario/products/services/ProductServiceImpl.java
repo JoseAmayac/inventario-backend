@@ -1,7 +1,10 @@
 package com.stock.inventario.products.services;
 
+import com.stock.inventario.products.dto.BasicProductDTO;
+import com.stock.inventario.products.dto.ProductCreationDTO;
 import com.stock.inventario.products.interfaces.ProductRepository;
 import com.stock.inventario.products.interfaces.ProductService;
+import com.stock.inventario.products.mappers.ProductMapper;
 import com.stock.inventario.products.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -16,39 +19,51 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     @Override
-    public List<Product> getProducts() {
-        return this.productRepository.findAll();
+    public List<BasicProductDTO> getProducts() {
+        return this.productRepository.findAll()
+                                     .stream()
+                                     .map(product -> this.productMapper.toBasicDto(product)).toList();
     }
 
     @Override
-    public Optional<Product> getProductById(String id) {
-        return this.productRepository.findById(id);
+    public BasicProductDTO getProductById(String id) {
+        Optional<Product> productOpt = this.productRepository.findById(id);
+        if (productOpt.isPresent()){
+            return this.productMapper.toBasicDto(productOpt.get());
+        }
+
+        return null;
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return this.productRepository.save(product);
+    public BasicProductDTO createProduct(ProductCreationDTO productDTO) {
+        Product product = this.productMapper.toEntity(productDTO);
+        return this.productMapper.toBasicDto(this.productRepository.save(product));
     }
 
     @Override
-    public Product updateProduct(Product product, String id) throws Exception {
-        Optional<Product> existingProduct = this.getProductById(id);
-        if (!existingProduct.isPresent()){
-            throw new Exception();
+    public BasicProductDTO updateProduct(ProductCreationDTO productCreationDTO, String id) throws ChangeSetPersister.NotFoundException {
+        BasicProductDTO product = this.getProductById(id);
+        if (product == null){
+            throw new ChangeSetPersister.NotFoundException();
         }else{
-            existingProduct.get().setName(product.getName());
-            existingProduct.get().setDescription(product.getDescription());
-            existingProduct.get().setPrice(product.getPrice());
-            existingProduct.get().setCost(product.getCost());
-            existingProduct.get().setStock(product.getStock());
+            Product productToUpdate = this.productMapper.toEntity(productCreationDTO);
+            productToUpdate.setId(id);
 
-            return this.productRepository.save(existingProduct.get());
+            return this.productMapper.toBasicDto(this.productRepository.save(productToUpdate));
         }
     }
 
     @Override
-    public void deleteProduct(String id) {
+    public void deleteProduct(String id) throws ChangeSetPersister.NotFoundException {
+        BasicProductDTO productExisting = this.getProductById(id);
+        if ( productExisting == null ){
+            throw new ChangeSetPersister.NotFoundException();
+        }
         this.productRepository.deleteById(id);
     }
 
