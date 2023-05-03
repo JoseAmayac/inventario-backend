@@ -24,7 +24,7 @@ public class ProductController {
     @GetMapping("")
     public ResponseEntity<ApiResponse> index(){
         try {
-            List<BasicProductDTO> products= this.productService.getProducts();
+            List<BasicProductDTO> products = this.productService.getProducts();
             return new ResponseEntity<ApiResponse>(new ApiResponse(true, products), HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<ApiResponse>(new ApiResponse(false, e.getMessage(), e), HttpStatus.INTERNAL_SERVER_ERROR);
