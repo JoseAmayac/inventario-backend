@@ -2,7 +2,7 @@ package com.stock.inventario.products.services;
 
 import com.stock.inventario.products.dto.BasicProductDTO;
 import com.stock.inventario.products.dto.ProductCreationDTO;
-import com.stock.inventario.products.interfaces.ProductRepository;
+import com.stock.inventario.products.repositories.ProductRepository;
 import com.stock.inventario.products.interfaces.ProductService;
 import com.stock.inventario.products.mappers.ProductMapper;
 import com.stock.inventario.products.models.Product;

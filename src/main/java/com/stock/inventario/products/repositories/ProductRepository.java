@@ -1,4 +1,4 @@
-package com.stock.inventario.products.interfaces;
+package com.stock.inventario.products.repositories;
 
 import com.stock.inventario.products.models.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
