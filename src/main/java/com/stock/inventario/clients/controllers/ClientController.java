@@ -1,11 +1,10 @@
-package com.stock.inventario.users.controllers;
+package com.stock.inventario.clients.controllers;
 
+import com.stock.inventario.clients.dto.BasicClientDTO;
+import com.stock.inventario.clients.dto.ClientCreationDTO;
+import com.stock.inventario.clients.interfaces.ClientService;
 import com.stock.inventario.common.ApiResponse;
-import com.stock.inventario.users.dto.BasicUserDTO;
-import com.stock.inventario.users.dto.UserCreationDTO;
-import com.stock.inventario.users.interfaces.UserService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -15,26 +14,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/clients")
+public class ClientController {
     @Autowired
-    private UserService userService;
+    private ClientService clientService;
 
     @GetMapping
     public ResponseEntity<ApiResponse> index(){
-        try {
-            List<BasicUserDTO> users = this.userService.getUsers();
-            return new ResponseEntity<ApiResponse>(new ApiResponse(true, users), HttpStatus.OK);
+        try{
+            List<BasicClientDTO> clients = this.clientService.getClients();
+            return new ResponseEntity<>(new ApiResponse(true, clients), HttpStatus.OK);
         }catch (Exception ex){
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, ex.getMessage(), ex), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage(), ex), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> show(@PathVariable String id){
-        try{
-            BasicUserDTO user = this.userService.getUserById(id);
-            return new ResponseEntity<>(new ApiResponse(true, user), HttpStatus.OK);
+        try {
+            BasicClientDTO client = this.clientService.getClientById(id);
+            return new ResponseEntity<>(new ApiResponse(true, client), HttpStatus.OK);
         }catch (ChangeSetPersister.NotFoundException ex){
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         }catch (Exception ex){
@@ -43,20 +42,20 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse> store(@Valid @RequestBody UserCreationDTO userCreationDTO){
-        try{
-            BasicUserDTO user = this.userService.createUser(userCreationDTO);
-            return new ResponseEntity<>(new ApiResponse(true, user), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse> store(@Valid @RequestBody ClientCreationDTO clientCreationDTO){
+        try {
+            BasicClientDTO client = this.clientService.createClient(clientCreationDTO);
+            return new ResponseEntity<>(new ApiResponse(true, client), HttpStatus.CREATED);
         }catch (Exception ex){
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, ex.getMessage(), ex), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage(), ex), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(@Valid @PathVariable String id, @Valid @RequestBody UserCreationDTO userCreationDTO){
+    public ResponseEntity<ApiResponse> update(@PathVariable String id, @Valid @RequestBody ClientCreationDTO clientCreationDTO){
         try{
-            BasicUserDTO user = this.userService.updateUser(id, userCreationDTO);
-            return new ResponseEntity<>(new ApiResponse(true, user), HttpStatus.OK);
+            BasicClientDTO client = this.clientService.updateClient(id, clientCreationDTO);
+            return new ResponseEntity<>(new ApiResponse(true, client), HttpStatus.OK);
         }catch (ChangeSetPersister.NotFoundException ex){
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         }catch (Exception ex){
@@ -66,9 +65,9 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> delete(@PathVariable String id){
-        try{
-            this.userService.deleteUser(id);
-            return new ResponseEntity<>(new ApiResponse(true, "Usuario eliminado con éxito"), HttpStatus.OK);
+        try {
+            this.clientService.deleteClient(id);
+            return new ResponseEntity<>(new ApiResponse(true, "Cliente eliminado con éxito"), HttpStatus.OK);
         }catch (ChangeSetPersister.NotFoundException ex){
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         }catch (Exception ex){

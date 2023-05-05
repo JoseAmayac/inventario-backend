@@ -1,4 +1,4 @@
-package com.stock.inventario.users.models;
+package com.stock.inventario.clients.models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,16 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document("users")
-public class User {
+@Document("clients")
+public class Client {
     @Id
     private String id;
     private String name;
-    private String lastName;
-    //private String document;
+    private String document;
     private String phone;
     private String email;
-    private String password;
-    private String username;
-    private String photoUrl;
 }
