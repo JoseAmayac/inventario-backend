@@ -7,23 +7,25 @@ import com.stock.inventario.users.mappers.UserMapper;
 import com.stock.inventario.users.models.User;
 import com.stock.inventario.users.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public class AuthService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -33,11 +35,12 @@ public class AuthService {
         return this.userMapper.toBasicDTO(this.userRepository.findById(id).orElse(null));
     }
 
-    public User getUserByUsername(String username){
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.userRepository.findByUsername(username).orElse(null);
     }
     public AuthenticationResponseDTO login(CredentialsDTO credentials){
-        User user = this.getUserByUsername(credentials.getUsername());
+        User user = this.loadUserByUsername(credentials.getUsername());
         if (user == null || !passwordEncoder.matches(credentials.getPassword(), user.getPassword())){
             throw new BadCredentialsException("Nombre de usuario o contraseña incorrectos");
         }
