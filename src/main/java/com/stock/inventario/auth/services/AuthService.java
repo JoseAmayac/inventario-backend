@@ -7,7 +7,6 @@ import com.stock.inventario.users.mappers.UserMapper;
 import com.stock.inventario.users.models.User;
 import com.stock.inventario.users.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,13 +25,11 @@ public class AuthService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtService jwtService;
 
-    public BasicUserDTO getById(String id){
-        return this.userMapper.toBasicDTO(this.userRepository.findById(id).orElse(null));
+    public User getById(String id){
+        return this.userRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -44,10 +41,7 @@ public class AuthService implements UserDetailsService {
         if (user == null || !passwordEncoder.matches(credentials.getPassword(), user.getPassword())){
             throw new BadCredentialsException("Nombre de usuario o contraseña incorrectos");
         }
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = this.jwtService.generateToken(user.getId());
-
         return new AuthenticationResponseDTO(token, this.userMapper.toBasicDTO(user));
     }
 }
