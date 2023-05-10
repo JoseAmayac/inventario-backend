@@ -2,16 +2,11 @@ package com.stock.inventario.auth.services;
 
 import com.stock.inventario.auth.dto.AuthenticationResponseDTO;
 import com.stock.inventario.auth.dto.CredentialsDTO;
-import com.stock.inventario.users.dto.BasicUserDTO;
 import com.stock.inventario.users.mappers.UserMapper;
 import com.stock.inventario.users.models.User;
 import com.stock.inventario.users.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

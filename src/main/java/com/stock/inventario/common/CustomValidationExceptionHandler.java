@@ -29,6 +29,8 @@ public class CustomValidationExceptionHandler extends ResponseEntityExceptionHan
             return error;
         }).toList();
 
-        return new ResponseEntity<Object>(new ApiResponse(false, "Error en solicitud",  errors), HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(new ApiResponse(false, "Error en solicitud",  errors), HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+
 }
