@@ -1,5 +1,7 @@
 package com.stock.inventario.suppliers.services;
 
+import com.stock.inventario.products.models.Product;
+import com.stock.inventario.products.repositories.ProductRepository;
 import com.stock.inventario.suppliers.dto.BasicSupplierDTO;
 import com.stock.inventario.suppliers.dto.SupplierCreationDTO;
 import com.stock.inventario.suppliers.interfaces.SupplierService;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -18,6 +21,9 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository supplierRepository;
     @Autowired
     private SupplierMapper supplierMapper;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<BasicSupplierDTO> getAllSuppliers() {
@@ -29,6 +35,12 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public BasicSupplierDTO getSupplierById(String id) throws ChangeSetPersister.NotFoundException {
         Supplier supplier = this.supplierRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+        List<Product> products = new ArrayList<>();
+        for (Product product : supplier.getProducts()){
+            Product productDB = this.productRepository.findById(product.getId()).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+            products.add( productDB );
+        }
+        supplier.setProducts( products );
         return this.supplierMapper.toBasicDTO(supplier);
     }
 
@@ -51,5 +63,15 @@ public class SupplierServiceImpl implements SupplierService {
     public void deleteSupplier(String id) throws ChangeSetPersister.NotFoundException {
         BasicSupplierDTO basicSupplierDTO = this.getSupplierById(id);
         this.supplierRepository.deleteById(basicSupplierDTO.getId());
+    }
+
+    @Override
+    public void associateProduct(String supplierId, String productId) throws ChangeSetPersister.NotFoundException{
+        Supplier supplier = this.supplierRepository.findById( supplierId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+        Product product = this.productRepository.findById( productId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+
+        supplier.getProducts().add( product );
+        this.supplierRepository.save( supplier );
+
     }
 }

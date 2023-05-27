@@ -3,6 +3,7 @@ package com.stock.inventario.suppliers.controllers;
 import com.stock.inventario.common.ApiResponse;
 import com.stock.inventario.suppliers.dto.BasicSupplierDTO;
 import com.stock.inventario.suppliers.dto.SupplierCreationDTO;
+import com.stock.inventario.suppliers.dto.SupplierProductDTO;
 import com.stock.inventario.suppliers.interfaces.SupplierService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,18 @@ public class SupplierController {
             this.supplierService.deleteSupplier(id);
             return new ResponseEntity<>(new ApiResponse(true, "Proveedor eliminado con éxito"), HttpStatus.OK);
         } catch (ChangeSetPersister.NotFoundException notFoundException) {
+            return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage(), e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/products/add")
+    public ResponseEntity<ApiResponse> associateProduct(@RequestBody SupplierProductDTO supplierProductDTO){
+        try {
+            this.supplierService.associateProduct(supplierProductDTO.getSupplierId(), supplierProductDTO.getProductId());
+            return new ResponseEntity<>(new ApiResponse(true, "Producto asociado a proveedor"), HttpStatus.OK);
+        }catch (ChangeSetPersister.NotFoundException notFoundException) {
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage(), e), HttpStatus.INTERNAL_SERVER_ERROR);

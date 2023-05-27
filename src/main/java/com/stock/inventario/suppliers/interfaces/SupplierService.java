@@ -12,4 +12,5 @@ public interface SupplierService {
     public BasicSupplierDTO createSupplier(SupplierCreationDTO supplierCreationDTO);
     public BasicSupplierDTO updateSupplier(String id, SupplierCreationDTO supplierCreationDTO) throws ChangeSetPersister.NotFoundException;
     public void deleteSupplier(String id) throws ChangeSetPersister.NotFoundException;
+    public void associateProduct(String supplierId, String productId) throws ChangeSetPersister.NotFoundException;
 }
