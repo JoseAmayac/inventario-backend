@@ -3,6 +3,7 @@ package com.stock.inventario.users.controllers;
 import com.stock.inventario.common.ApiResponse;
 import com.stock.inventario.users.dto.BasicUserDTO;
 import com.stock.inventario.users.dto.UserCreationDTO;
+import com.stock.inventario.users.dto.UserRoleDTO;
 import com.stock.inventario.users.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
@@ -69,6 +70,18 @@ public class UserController {
         try{
             this.userService.deleteUser(id);
             return new ResponseEntity<>(new ApiResponse(true, "Usuario eliminado con éxito"), HttpStatus.OK);
+        }catch (ChangeSetPersister.NotFoundException ex){
+            return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
+        }catch (Exception ex){
+            return new ResponseEntity<>(new ApiResponse(false, ex.getMessage(), ex), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{id}/update-roles")
+    public ResponseEntity<ApiResponse> syncRoles(@PathVariable String id, @RequestBody UserRoleDTO userRoleDTO){
+        try {
+            this.userService.syncUserRoles(id, userRoleDTO.getRoleIds() );
+            return new ResponseEntity<>(new ApiResponse(true, "Roles sincronizados correctamente"), HttpStatus.OK);
         }catch (ChangeSetPersister.NotFoundException ex){
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         }catch (Exception ex){

@@ -4,6 +4,8 @@ import com.stock.inventario.products.models.Product;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -22,6 +24,6 @@ public class Supplier {
     private String email;
     private String companyWebUrl;
 
-    @DocumentReference()
+    @ReadOnlyProperty
     private List<Product> products;
 }

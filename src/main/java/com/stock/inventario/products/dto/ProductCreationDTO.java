@@ -3,10 +3,15 @@ package com.stock.inventario.products.dto;
 
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class ProductCreationDTO implements Serializable {
 
     @NotNull(message = "El nombre es requerido")
@@ -21,44 +26,7 @@ public class ProductCreationDTO implements Serializable {
     @Min(value = 0, message = "El stock debe ser mayor o igual a cero")
     @NotNull(message = "El stock es requerido")
     private Integer stock;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
+    @NotNull(message = "El proveedor del producto es requerido")
+    @NotBlank(message = "El proveedor no puede estar vacío")
+    private  String supplierId;
 }

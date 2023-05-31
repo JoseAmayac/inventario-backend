@@ -10,7 +10,7 @@ public interface ProductService {
 
     public BasicProductDTO getProductById(String id);
 
-    public BasicProductDTO createProduct(ProductCreationDTO product);
+    public BasicProductDTO createProduct(ProductCreationDTO product) throws ChangeSetPersister.NotFoundException;
 
     public BasicProductDTO updateProduct(ProductCreationDTO product, String id) throws ChangeSetPersister.NotFoundException;
 

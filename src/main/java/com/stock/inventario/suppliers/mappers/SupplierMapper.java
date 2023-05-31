@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SupplierMapper {
     public Supplier toEntity(SupplierCreationDTO supplierCreationDTO);
-    @Mapping(source = "products", target = "products")
+    //@Mapping(source = "products", target = "products")
+
     public BasicSupplierDTO toBasicDTO(Supplier supplier);
 }

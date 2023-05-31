@@ -12,4 +12,5 @@ public interface UserService {
     public BasicUserDTO createUser(UserCreationDTO userCreationDTO);
     public BasicUserDTO updateUser(String id, UserCreationDTO userCreationDTO) throws ChangeSetPersister.NotFoundException;
     public void deleteUser(String id) throws ChangeSetPersister.NotFoundException;
+    public void syncUserRoles(String userId, List<String> roleIds) throws ChangeSetPersister.NotFoundException;
 }

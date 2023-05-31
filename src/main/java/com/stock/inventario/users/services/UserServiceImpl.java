@@ -1,5 +1,7 @@
 package com.stock.inventario.users.services;
 
+import com.stock.inventario.roles.models.Role;
+import com.stock.inventario.roles.repositories.RoleRepository;
 import com.stock.inventario.users.dto.BasicUserDTO;
 import com.stock.inventario.users.dto.UserCreationDTO;
 import com.stock.inventario.users.interfaces.UserService;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +24,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -70,6 +76,20 @@ public class UserServiceImpl implements UserService {
         }catch (ChangeSetPersister.NotFoundException ex){
             throw new ChangeSetPersister.NotFoundException();
         }
+    }
+
+    @Override
+    public void syncUserRoles(String userId, List<String> roleIds) throws ChangeSetPersister.NotFoundException {
+        User user = this.userRepository.findById( userId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+        user.setRoles(new ArrayList<>());
+        this.userRepository.save( user );
+
+        for(String roleId : roleIds){
+            Role role = this.roleRepository.findById( roleId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+            user.getRoles().add( role );
+        }
+
+        this.userRepository.save( user );
     }
 
     private String hashPassword(String plainPassword){

@@ -29,7 +29,11 @@ public class SupplierServiceImpl implements SupplierService {
     public List<BasicSupplierDTO> getAllSuppliers() {
         return this.supplierRepository.findAll()
                                       .stream()
-                                      .map(supplier -> this.supplierMapper.toBasicDTO(supplier)).toList();
+                                      .map(supplier -> {
+                                          List<Product> products = this.productRepository.findBySupplierId( supplier.getId() );
+                                          supplier.setProducts( products );
+                                          return this.supplierMapper.toBasicDTO(supplier);
+                                      }).toList();
     }
 
     @Override
@@ -67,11 +71,22 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void associateProduct(String supplierId, String productId) throws ChangeSetPersister.NotFoundException{
-        Supplier supplier = this.supplierRepository.findById( supplierId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-        Product product = this.productRepository.findById( productId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-
-        supplier.getProducts().add( product );
-        this.supplierRepository.save( supplier );
+//        Supplier supplier = this.supplierRepository.findById( supplierId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+//        Product product = this.productRepository.findById( productId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+//
+//        if ( supplier.getProducts() == null ){
+//            supplier.setProducts(new ArrayList<>());
+//        }
+//
+//        product.setSupplierId( supplier.getId() );
+//        this.productRepository.save( product );
+//
+//
+//        supplier.getProducts().add( product );
+//        this.supplierRepository.save( supplier );
+//
+//        product = this.productRepository.findById( productId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+//        System.out.println( product.getSupplierId());
 
     }
 }

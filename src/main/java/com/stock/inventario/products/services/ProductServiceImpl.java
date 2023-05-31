@@ -6,6 +6,8 @@ import com.stock.inventario.products.repositories.ProductRepository;
 import com.stock.inventario.products.interfaces.ProductService;
 import com.stock.inventario.products.mappers.ProductMapper;
 import com.stock.inventario.products.models.Product;
+import com.stock.inventario.suppliers.models.Supplier;
+import com.stock.inventario.suppliers.repositories.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     @Autowired
     private ProductMapper productMapper;
@@ -40,8 +45,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public BasicProductDTO createProduct(ProductCreationDTO productDTO) {
+    public BasicProductDTO createProduct(ProductCreationDTO productDTO) throws ChangeSetPersister.NotFoundException {
+        Supplier supplier = this.supplierRepository.findById( productDTO.getSupplierId() ).orElseThrow(()->new ChangeSetPersister.NotFoundException());
         Product product = this.productMapper.toEntity(productDTO);
+        product.setSupplier( supplier );
         return this.productMapper.toBasicDto(this.productRepository.save(product));
     }
 
