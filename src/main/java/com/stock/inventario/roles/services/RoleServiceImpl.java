@@ -67,5 +67,4 @@ public class RoleServiceImpl implements RoleService {
 
         this.roleRepository.save( role );
     }
-
 }
