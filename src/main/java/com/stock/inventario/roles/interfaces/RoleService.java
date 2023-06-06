@@ -12,4 +12,5 @@ public interface RoleService {
     public BasicRoleDTO createRole(RoleCreationDTO roleCreationDTO);
     public BasicRoleDTO updateRole(String id, RoleCreationDTO roleCreationDTO) throws ChangeSetPersister.NotFoundException;
     public void deleteRole(String id) throws ChangeSetPersister.NotFoundException;
+    public void syncPermissions(String roleId, List<String> permissionsIds) throws ChangeSetPersister.NotFoundException;
 }

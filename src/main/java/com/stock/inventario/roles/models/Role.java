@@ -1,5 +1,6 @@
 package com.stock.inventario.roles.models;
 
+import com.stock.inventario.permissions.models.Permission;
 import com.stock.inventario.users.models.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +18,7 @@ public class Role {
 
     @DBRef
     private List<User> users;
+
+    @DBRef
+    private List<Permission> permissions;
 }

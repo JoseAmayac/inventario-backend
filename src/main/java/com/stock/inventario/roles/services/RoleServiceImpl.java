@@ -1,5 +1,7 @@
 package com.stock.inventario.roles.services;
 
+import com.stock.inventario.permissions.models.Permission;
+import com.stock.inventario.permissions.repositories.PermissionRepository;
 import com.stock.inventario.roles.dto.BasicRoleDTO;
 import com.stock.inventario.roles.dto.RoleCreationDTO;
 import com.stock.inventario.roles.interfaces.RoleService;
@@ -10,14 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-
     @Autowired
     private RoleRepository roleRepository;
-
+    @Autowired
+    private PermissionRepository permissionRepository;
     @Autowired
     private RoleMapper roleMapper;
 
@@ -50,4 +53,19 @@ public class RoleServiceImpl implements RoleService {
         this.getRoleById( id );
         this.roleRepository.deleteById( id );
     }
+
+    @Override
+    public void syncPermissions(String roleId, List<String> permissionsIds) throws ChangeSetPersister.NotFoundException {
+        Role role = this.roleRepository.findById( roleId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+        role.setPermissions(new ArrayList<>());
+        this.roleRepository.save( role );
+
+        for (String permissionId: permissionsIds){
+            Permission permission = this.permissionRepository.findById( permissionId ).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+            role.getPermissions().add( permission );
+        }
+
+        this.roleRepository.save( role );
+    }
+
 }
