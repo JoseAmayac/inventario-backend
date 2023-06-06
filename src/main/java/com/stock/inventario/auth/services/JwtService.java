@@ -7,6 +7,8 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +18,17 @@ public class JwtService {
     private final String JWT_SECRET = "jsdpfjoasdjfopasjdfpuufofjpopjfasd.-fadfkakpfasdfpasdf@odsfopasofpa-asdfjafo";
 
     public String generateToken(String userId){
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + 60000);
+        Instant now = Instant.now();
+        Duration validityDuration = Duration.ofHours( 6 );
+        Instant validity = now.plus( validityDuration );
+        Date validityDate = Date.from( validity );
+
         Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
         Map<String, String> payload = new HashMap<>();
         payload.put("user", userId);
         return JWT.create()
                 .withIssuedAt(now)
-                .withExpiresAt(validity)
+                .withExpiresAt(validityDate)
                 .withPayload(payload)
                 .sign(algorithm);
     }
