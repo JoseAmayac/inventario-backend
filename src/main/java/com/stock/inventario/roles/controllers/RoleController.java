@@ -3,6 +3,7 @@ package com.stock.inventario.roles.controllers;
 import com.stock.inventario.common.ApiResponse;
 import com.stock.inventario.roles.dto.BasicRoleDTO;
 import com.stock.inventario.roles.dto.RoleCreationDTO;
+import com.stock.inventario.roles.dto.RolePermissionDTO;
 import com.stock.inventario.roles.interfaces.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -70,6 +71,19 @@ public class RoleController {
         try {
             this.roleService.deleteRole( id );
             return new ResponseEntity<>(new ApiResponse(true, "Rol eliminado correctamente"), HttpStatus.NO_CONTENT);
+        }catch (ChangeSetPersister.NotFoundException e){
+            return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage(), e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/permissions/update")
+    public ResponseEntity<ApiResponse> syncPermissions(@RequestBody RolePermissionDTO rolePermissionDTO){
+        try{
+            this.roleService.syncPermissions(rolePermissionDTO.getRoleId(), rolePermissionDTO.getPermissionsIds());
+            return new ResponseEntity<>(new ApiResponse(true, "Permisos sincronizados correctamente"), HttpStatus.OK);
         }catch (ChangeSetPersister.NotFoundException e){
             return new ResponseEntity<>(new ApiResponse(false, "Recurso no encontrado"), HttpStatus.NOT_FOUND);
         }

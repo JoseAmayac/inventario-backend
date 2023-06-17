@@ -45,7 +45,6 @@ public class User implements UserDetails {
         return permissions.stream()
                 .map(permission -> new SimpleGrantedAuthority( permission.getName() ))
                 .collect(Collectors.toList());
-
     }
 
     @Override
