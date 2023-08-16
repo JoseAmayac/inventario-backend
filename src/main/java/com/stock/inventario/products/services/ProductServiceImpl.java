@@ -1,5 +1,11 @@
 package com.stock.inventario.products.services;
 
+import com.stock.inventario.brands.models.Brand;
+import com.stock.inventario.brands.repositories.BrandRepository;
+import com.stock.inventario.categories.models.Category;
+import com.stock.inventario.measurementUnits.models.MeasurementUnit;
+import com.stock.inventario.productStatus.models.ProductStatus;
+import com.stock.inventario.productStatus.repositories.ProductStatusRepository;
 import com.stock.inventario.products.dto.BasicProductDTO;
 import com.stock.inventario.products.dto.ProductCreationDTO;
 import com.stock.inventario.products.repositories.ProductRepository;
@@ -25,6 +31,12 @@ public class ProductServiceImpl implements ProductService {
     private SupplierRepository supplierRepository;
 
     @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
+    private ProductStatusRepository productStatusRepository;
+
+    @Autowired
     private ProductMapper productMapper;
 
     @Override
@@ -47,8 +59,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public BasicProductDTO createProduct(ProductCreationDTO productDTO) throws ChangeSetPersister.NotFoundException {
         Supplier supplier = this.supplierRepository.findById( productDTO.getSupplierId() ).orElseThrow(()->new ChangeSetPersister.NotFoundException());
+        Brand brand = new Brand();
+        brand.setId( productDTO.getBrandId() );
+        ProductStatus status = new ProductStatus();
+        status.setId( productDTO.getStatusId() );
+        MeasurementUnit unit = new MeasurementUnit();
+        unit.setId( productDTO.getUnitId() );
+        Category category = new Category();
+        category.setId( productDTO.getCategoryId() );
         Product product = this.productMapper.toEntity(productDTO);
         product.setSupplier( supplier );
+        product.setBrand( brand );
+        product.setUnit( unit );
+        product.setCategory( category );
         return this.productMapper.toBasicDto(this.productRepository.save(product));
     }
 

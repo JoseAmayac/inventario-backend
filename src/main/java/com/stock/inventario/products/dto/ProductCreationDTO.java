@@ -23,10 +23,19 @@ public class ProductCreationDTO implements Serializable {
     @NotNull(message = "El costo es requerido")
     private Double cost;
     private String description;
+    private String unitId;
     @Min(value = 0, message = "El stock debe ser mayor o igual a cero")
     @NotNull(message = "El stock es requerido")
     private Integer stock;
+    private String brandId;
+    private Integer rating;
+    private String statusId;
+    private String slug;
     @NotNull(message = "El proveedor del producto es requerido")
     @NotBlank(message = "El proveedor no puede estar vacío")
     private  String supplierId;
+    private Integer discount;
+    private String code;
+    private String photo;
+    private String categoryId;
 }
